@@ -1,12 +1,23 @@
 ﻿#include "UWorldGenerator.h"
 #include "SnakeGame/Public/UWorldGenerator.h"
 
+#include "Grid.h"
+#include "Components/InstancedStaticMeshComponent.h"
 #include "SnakeGame/Definitions.h"
 
 
 UWorldGenerator::UWorldGenerator()
 {
-	Grid = new FGrid();
+	GameGrid = Grid::GetInstance();
+
+
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+
+	WallMeshInstances = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("WallMeshInstances"));
+	WallMeshInstances->SetupAttachment(RootComponent);
+
+	
+	
 }
 
 UWorldGenerator::~UWorldGenerator()
@@ -15,7 +26,7 @@ UWorldGenerator::~UWorldGenerator()
 
 void UWorldGenerator::GenerateMap(const FString& FileName) const
 {
-	if(!Grid->Tiles.empty()) { ClearMap(); }
+	
 
 	//todo: read the files in the maps folder and give as a suggestion in a collection for the argument of generate map
 
@@ -29,12 +40,26 @@ void UWorldGenerator::GenerateMap(const FString& FileName) const
 		{
 			for(int x = 0; x < Row.Len(); x++)
 			{
-				Grid->Tiles.emplace_back(FGrid::FTile(std::make_pair(x, y), 0, false, false));
-
 				switch(Row[x])
 				{
-				case '#': Grid->Tiles.back().Occupied = true; Grid->Tiles.back().IsWall = true; break;
-				case '.': /* Create a floor mesh that spawns below the wall height */ break;
+				case 'X':
+					{
+						/* Create a wall mesh that spawns at the wall height */
+						GameGrid->SetTile(x, y, true);
+
+						FVector WorldLocation = FVector(x * TileSize + 50, y * TileSize + 50, 10);
+						FTransform InstanceTransform;
+						InstanceTransform.SetLocation(WorldLocation);
+						WallMeshInstances->AddInstance(InstanceTransform);
+						break;
+					}
+				case 'O':
+					{
+						/* Create a floor mesh that spawns below the wall height */
+						GameGrid->SetTile(x, y, false);
+					}
+
+					break;
 				default: break;
 				}
 			}
@@ -49,15 +74,21 @@ void UWorldGenerator::GenerateMap(const FString& FileName) const
 
 		//loop through all tiles and create the appropriate meshes for each of them
 
-		Grid->Width = GWorld_Width;
-		Grid->Height = GWorld_Height;
+
+		
+		// Grid->Width = GWorld_Width;
+		// Grid->Height = GWorld_Height;
 	}
 }
 
 void UWorldGenerator::ClearMap() const
 {
 	//get rid of all meshes
-	Grid->Tiles.clear();
+
+
+	//Grid->Tiles.clear();
+
+	GameGrid->ClearGrid();
 }
 
 void UWorldGenerator::Initialize(FSubsystemCollectionBase& Collection) { Super::Initialize(Collection); }

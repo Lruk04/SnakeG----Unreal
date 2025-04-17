@@ -4,10 +4,10 @@
 #include "SnakeGameMode.h"
 #include "Kismet/GameplayStatics.h"
 
-float ASnakePlayerState::GetSnakeSpeed()
-{
-	return SnakeSpeed;
-}
+// float ASnakePlayerState::GetSnakeSpeed()
+// {
+// 	return SnakeSpeed;
+// }
 
 void ASnakePlayerState::IncreaseSnakeSpeed(float InAddSpeed)
 {

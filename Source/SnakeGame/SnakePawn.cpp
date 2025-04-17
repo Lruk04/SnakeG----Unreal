@@ -123,19 +123,19 @@ void ASnakePawn::UpdateMovement(float DeltaTime)
 		{
 			ChildBodyPart->SetNextPosition(GetActorLocation());
 		}
-
+	
 		// Debug stuff
-		if (Direction != ESnakeDirection::None)
-		{
-			TmpMovementMade++;
-
-			if (TmpMovementMade > 5)
-			{
-				TmpMovementMade = 0;
-
-				AteApple();
-			}
-		}
+		// if (Direction != ESnakeDirection::None)
+		// {
+		// 	TmpMovementMade++;
+		// 	
+		// 	if (TmpMovementMade > 5)
+		// 	{
+		// 		TmpMovementMade = 0;
+		// 	
+		// 		AteApple();
+		// 	}
+		// }
 	}
 
 	// If there are any move distance left, then move the snake that distance
@@ -210,6 +210,7 @@ void ASnakePawn::UpdateDirection()
 	{
 	case ESnakeDirection::Up:
 		ForwardRotation = FRotator(0.0f, 0.0f, 0.0f);
+		AteApple();
 		break;
 	case ESnakeDirection::Right:
 		ForwardRotation = FRotator(0.0f, 90.0f, 0.0f);

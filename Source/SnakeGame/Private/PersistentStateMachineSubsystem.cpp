@@ -27,8 +27,6 @@ void UPersistentStateMachineSubsystem::Tick(float DeltaTime)
     if (CurrentState && CurrentState->GetClass()->ImplementsInterface(UStateBase::StaticClass()))
     {
         IStateBase::Execute_UpdateState(CurrentState, DeltaTime);
-      
-        
     }
 }
 

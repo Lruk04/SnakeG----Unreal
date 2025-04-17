@@ -7,32 +7,23 @@ class UWorldGenerator final : public UWorldSubsystem
 	GENERATED_BODY()
 
 public:
-	class FGrid
-	{
-	public:
-		class FTile
-		{
-			std::pair<int, int> Position;
+	Grid* GameGrid = nullptr;
 
-		public:
-			float Value;
-			bool Occupied;
-			bool IsWall;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	USceneComponent* SceneComponent;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USceneComponent* RootComponent;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UInstancedStaticMeshComponent * WallMeshInstances;
 
-			explicit FTile(const std::pair<int, int> Position, const float Value = 0.0f, const bool bOccupied = false, const bool bIsWall = false) :
-				Position(Position), Value(Value), Occupied(bOccupied), IsWall(bIsWall) {};
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<AActor*> SpawnedActor;
 
-			std::pair<int, int> GetPosition() const { return Position; };
-		};
 
-		int Width = 0;
-		int Height = 0;
-
-		std::vector<FTile> Tiles; //x position + (width * y)
-	};
-
-	FGrid* Grid;
-
+	
 	UWorldGenerator();
 	virtual ~UWorldGenerator() override;
 

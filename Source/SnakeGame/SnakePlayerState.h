@@ -23,7 +23,7 @@ protected:
 
 public:
 	UFUNCTION(BlueprintCallable)
-	float GetSnakeSpeed();
+	float GetSnakeSpeed() const;
 
 	UFUNCTION(BlueprintCallable)
 	void IncreaseSnakeSpeed(float InAddSpeed);

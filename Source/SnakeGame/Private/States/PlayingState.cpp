@@ -2,7 +2,7 @@
 
 
 #include "SnakeGame/Public/States//PlayingState.h"
-
+#include "SnakeGame/Public/Grid.h"
 
 void UPlayingState::EnterState_Implementation()
 {
@@ -27,4 +27,7 @@ void UPlayingState::UpdateState_Implementation(float DeltaTime)
 	}
 
 	ReceiveUpdateState(DeltaTime);
+	
+	
+	
 }
