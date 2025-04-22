@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "Grid.h"
 #include "UWorldGenerator.generated.h"
 
 UCLASS(Blueprintable)

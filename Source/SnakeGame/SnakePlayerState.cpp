@@ -9,6 +9,12 @@
 // 	return SnakeSpeed;
 // }
 
+float ASnakePlayerState::GetSnakeSpeed() const
+{
+	// Provide the actual logic for returning the snake's speed
+	return SnakeSpeed; // Assuming `SnakeSpeed` is a member variable
+}
+
 void ASnakePlayerState::IncreaseSnakeSpeed(float InAddSpeed)
 {
 	SnakeSpeed += InAddSpeed;

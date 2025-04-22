@@ -1,5 +1,6 @@
 ﻿#include "Grid.h"
 
+Grid* Grid::Instance = nullptr;
 
 Tile::Tile(int x, int y, char symbol) : x(x), y(y), symbol(symbol), occupied(false), hCost(0), gCost(0), fCost(0), parent(nullptr)
 {

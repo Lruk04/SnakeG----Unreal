@@ -58,28 +58,29 @@ void ASnakePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	
+
 }
 
 void ASnakePawn::MoveSnake(float Distance)
 {
 	// Get snake location in the world
 	FVector Position = GetActorLocation();
-
 	// Update moving the snake
 	switch (Direction)
 	{
-	case ESnakeDirection::Up:
-		Position.X += Distance;
-		break;
-	case ESnakeDirection::Right:
-		Position.Y += Distance;
-		break;
-	case ESnakeDirection::Down:
-		Position.X -= Distance;
-		break;
-	case ESnakeDirection::Left:
-		Position.Y -= Distance;
-		break;
+		case ESnakeDirection::Up:
+			Position.X += Distance;
+			break;
+		case ESnakeDirection::Right:
+			Position.Y += Distance;
+			break;
+		case ESnakeDirection::Down:
+			Position.X -= Distance;
+			break;
+		case ESnakeDirection::Left:
+			Position.Y -= Distance;
+			break;
 	}
 
 	// Set snake location in the world
@@ -199,8 +200,15 @@ void ASnakePawn::UpdateDirection()
 		return;
 	}
 
-	Direction = DirectionQueue[0];
+	if (Direction != ESnakeDirection::None &&
+	(static_cast<uint8>(Direction) + 2) % 4 == static_cast<uint8>(DirectionQueue[0]))
+	{
+		// Ignore the opposite direction
+		DirectionQueue.RemoveAt(0);
+		return;
+	}
 
+	Direction = DirectionQueue[0];
 	DirectionQueue.RemoveAt(0);
 
 
@@ -221,6 +229,7 @@ void ASnakePawn::UpdateDirection()
 	case ESnakeDirection::Left:
 		ForwardRotation = FRotator(0.0f, 270.0f, 0.0f);
 		break;
+	default: ;
 	}
 }
 
