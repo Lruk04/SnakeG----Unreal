@@ -16,8 +16,8 @@ public:
 	// Sets default values for this actor's properties
 	ASnakeWorld();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UInstancedStaticMeshComponent* WallMeshInstances;
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	// UInstancedStaticMeshComponent* WallMeshInstances;
 
 protected:
 	// Called when the game starts or when spawned

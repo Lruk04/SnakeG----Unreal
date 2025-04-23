@@ -10,12 +10,6 @@ UWorldGenerator::UWorldGenerator()
 {
 	GameGrid = Grid::GetInstance();
 
-
-	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
-
-	WallMeshInstances = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("WallMeshInstances"));
-	WallMeshInstances->SetupAttachment(RootComponent);
-
 	
 	
 }
@@ -24,14 +18,14 @@ UWorldGenerator::~UWorldGenerator()
 {
 }
 
-void UWorldGenerator::GenerateMap(const FString& FileName) const
+void UWorldGenerator::GenerateMap(const FString& FileName, UWorldGeneratorDataAsset* dataAsset) const
 {
 	
 
 	//todo: read the files in the maps folder and give as a suggestion in a collection for the argument of generate map
 
 	TArray<FString> Rows;
-	const FString FilePath = FPaths::ProjectContentDir() + (TEXT("../Maps/") + FileName);
+	const FString FilePath = FPaths::ProjectContentDir() + (TEXT("Maps/") + FileName + ".txt");
 
 	if(FFileHelper::LoadFileToStringArray(Rows, *FilePath))
 	{
@@ -40,23 +34,31 @@ void UWorldGenerator::GenerateMap(const FString& FileName) const
 		{
 			for(int x = 0; x < Row.Len(); x++)
 			{
+			
+				FTransform Offset = FTransform(FRotator::ZeroRotator, FVector((Rows.Num() - y) * TileSize, x * TileSize, 0.0f));
+				
 				switch(Row[x])
 				{
 				case 'X':
 					{
-						/* Create a wall mesh that spawns at the wall height */
-						GameGrid->SetTile(x, y, true);
 
-						FVector WorldLocation = FVector(x * TileSize + 50, y * TileSize + 50, 10);
-						FTransform InstanceTransform;
-						InstanceTransform.SetLocation(WorldLocation);
-						WallMeshInstances->AddInstance(InstanceTransform);
+						GameGrid->SetTile(x, y, true);
+						
+						if (dataAsset && dataAsset->WallMesh)
+						{
+							GetWorld()->SpawnActor(dataAsset->WallMesh, &Offset);
+						}
+						else
+						{
+							UE_LOG(LogTemp, Error, TEXT("WorldGenerator: DataAsset or WallMesh is missing"));
+						}
+						
 						break;
 					}
 				case 'O':
 					{
 						/* Create a floor mesh that spawns below the wall height */
-						GameGrid->SetTile(x, y, false);
+						//GameGrid->SetTile(x, y, false);
 					}
 
 					break;
@@ -91,4 +93,9 @@ void UWorldGenerator::ClearMap() const
 	GameGrid->ClearGrid();
 }
 
-void UWorldGenerator::Initialize(FSubsystemCollectionBase& Collection) { Super::Initialize(Collection); }
+void UWorldGenerator::Initialize(FSubsystemCollectionBase& Collection)
+{
+	Super::Initialize(Collection);
+
+	
+}

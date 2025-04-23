@@ -2,6 +2,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UWorldGeneratorDataAsset.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "SnakeGame/Public/States/StateBase.h"
 #include "PersistentStateMachineSubsystem.generated.h"
@@ -42,4 +43,5 @@ private:
 	bool bIsActive = true;
 
 	void CleanupCurrentState();
+
 };

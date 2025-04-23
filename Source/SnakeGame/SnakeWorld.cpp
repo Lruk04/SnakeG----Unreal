@@ -7,13 +7,13 @@
 ASnakeWorld::ASnakeWorld()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
-	WallMeshInstances = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("Wall Mesh Instances"));
-
-	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
-
-	WallMeshInstances->SetupAttachment(RootComponent);
+	// PrimaryActorTick.bCanEverTick = true;
+	//
+	// WallMeshInstances = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("Wall Mesh Instances"));
+	//
+	// RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
+	//
+	// WallMeshInstances->SetupAttachment(RootComponent);
 
 	// Here you can get started on creating your level
 	/*
@@ -32,10 +32,10 @@ ASnakeWorld::ASnakeWorld()
 	*/
 
 
-	for (int x = 0; x < 5000; x += 200)
-	{
-		WallMeshInstances->AddInstance(FTransform(FRotator::ZeroRotator, FVector(x, 200.0f, 0.0f)));
-	}
+	// for (int x = 0; x < 5000; x += 200)
+	// {
+	// 	WallMeshInstances->AddInstance(FTransform(FRotator::ZeroRotator, FVector(x, 200.0f, 0.0f)));
+	// }
 }
 
 // Called when the game starts or when spawned
