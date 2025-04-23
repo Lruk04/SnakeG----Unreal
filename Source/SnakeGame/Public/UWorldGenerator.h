@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "Grid.h"
-#include "UWorldGeneratorDataAsset.h"
+#include "UWorldGenDataAsset.h"
 #include "UWorldGenerator.generated.h"
 
 UCLASS(Blueprintable)
@@ -9,8 +9,6 @@ class UWorldGenerator final : public UWorldSubsystem
 	GENERATED_BODY()
 
 public:
-	
-	
 	Grid* GameGrid = nullptr;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -22,7 +20,7 @@ public:
 	virtual ~UWorldGenerator() override;
 
 	UFUNCTION(BlueprintCallable, Category = "WorldGenerator")
-	void GenerateMap(const FString& FileName, UWorldGeneratorDataAsset* dataAsset) const;
+	void GenerateMap(const FString& FileName, const UWorldGenDataAsset* dataAsset) const;
 
 	UFUNCTION(BlueprintCallable, Category = "WorldGenerator")
 	void ClearMap() const;

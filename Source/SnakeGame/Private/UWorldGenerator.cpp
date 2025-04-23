@@ -18,7 +18,7 @@ UWorldGenerator::~UWorldGenerator()
 {
 }
 
-void UWorldGenerator::GenerateMap(const FString& FileName, UWorldGeneratorDataAsset* dataAsset) const
+void UWorldGenerator::GenerateMap(const FString& FileName, const UWorldGenDataAsset* dataAsset) const
 {
 	
 
@@ -29,31 +29,48 @@ void UWorldGenerator::GenerateMap(const FString& FileName, UWorldGeneratorDataAs
 
 	if(FFileHelper::LoadFileToStringArray(Rows, *FilePath))
 	{
+		
 		int y = 0;
 		for(const FString& Row : Rows)
 		{
 			for(int x = 0; x < Row.Len(); x++)
 			{
 			
-				FTransform Offset = FTransform(FRotator::ZeroRotator, FVector((Rows.Num() - y) * TileSize, x * TileSize, 0.0f));
+				FTransform Offset = FTransform(FRotator::ZeroRotator, FVector((Rows.Num() - y) * TileSize + 50, x * TileSize + 50, 0.0f));
 				
 				switch(Row[x])
 				{
 				case 'X':
 					{
-
+						
 						GameGrid->SetTile(x, y, true);
-						
-						if (dataAsset && dataAsset->WallMesh)
+
+						if (GEngine)
 						{
-							GetWorld()->SpawnActor(dataAsset->WallMesh, &Offset);
-						}
-						else
-						{
-							UE_LOG(LogTemp, Error, TEXT("WorldGenerator: DataAsset or WallMesh is missing"));
+							GEngine->AddOnScreenDebugMessage(
+								/* Key */ -1, 
+								/* TimeToDisplay */ 5.0f, 
+								/* Color */ FColor::Green, 
+								/* Message */ TEXT("SPAWN WALL")
+							);
 						}
 						
-						break;
+						if (dataAsset == nullptr)
+						{
+							UE_LOG(LogTemp, Error, TEXT("Data asset is null"));
+							return;
+						}
+						if (dataAsset->AWallMesh == nullptr) 
+						{
+							UE_LOG(LogTemp, Error, TEXT("Wall mesh is null"));
+							return;
+						}
+
+						
+						
+						GetWorld()->SpawnActor(dataAsset->AWallMesh, &Offset);
+					
+						
 					}
 				case 'O':
 					{
@@ -80,6 +97,18 @@ void UWorldGenerator::GenerateMap(const FString& FileName, UWorldGeneratorDataAs
 		
 		// Grid->Width = GWorld_Width;
 		// Grid->Height = GWorld_Height;
+	}
+	else
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(
+				/* Key */ -1, 
+				/* TimeToDisplay */ 5.0f, 
+				/* Color */ FColor::Green, 
+				/* Message */ TEXT("TRY ANYTHING")
+			);
+		}
 	}
 }
 
