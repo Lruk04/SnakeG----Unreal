@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SnakePawn.h"
 #include "GameFramework/Actor.h"
 #include "Components/SphereComponent.h"
 #include "SnakeBodyPart.generated.h"
@@ -13,8 +14,17 @@ UCLASS()
 class SNAKEGAME_API ASnakeBodyPart : public AActor
 {
 	GENERATED_BODY()
+private:
+	FVector Offset;
+
 	
-public:	
+
+	FVector GetOffset();
+
+	ASnakePawn* SnakePawn = nullptr;
+public:
+
+	int intOffset;
 	// Sets default values for this actor's properties
 	ASnakeBodyPart();
 
@@ -25,8 +35,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USphereComponent* CollisionComponent;
 
-	void AddChildBodyPart(ASnakeBodyPart* InChildBodyPart);
+	void AddChildBodyPart(ASnakeBodyPart* InChildBodyPart, ASnakePawn* TempSnakePawn, int index);
 
+	
 protected:
 	UPROPERTY()
 	ASnakePlayerState* SnakePlayerState = nullptr;

@@ -55,17 +55,7 @@ void UWorldGenerator::GenerateMap(const FString& FileName, const UWorldGenDataAs
 							);
 						}
 						
-						if (dataAsset == nullptr)
-						{
-							UE_LOG(LogTemp, Error, TEXT("Data asset is null"));
-							return;
-						}
-						if (dataAsset->AWallMesh == nullptr) 
-						{
-							UE_LOG(LogTemp, Error, TEXT("Wall mesh is null"));
-							return;
-						}
-
+				
 						
 						
 						GetWorld()->SpawnActor(dataAsset->AWallMesh, &Offset);

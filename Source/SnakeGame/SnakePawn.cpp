@@ -125,18 +125,7 @@ void ASnakePawn::UpdateMovement(float DeltaTime)
 			ChildBodyPart->SetNextPosition(GetActorLocation());
 		}
 	
-		// Debug stuff
-		// if (Direction != ESnakeDirection::None)
-		// {
-		// 	TmpMovementMade++;
-		// 	
-		// 	if (TmpMovementMade > 5)
-		// 	{
-		// 		TmpMovementMade = 0;
-		// 	
-		// 		AteApple();
-		// 	}
-		// }
+		
 	}
 
 	// If there are any move distance left, then move the snake that distance
@@ -211,7 +200,7 @@ void ASnakePawn::UpdateDirection()
 	Direction = DirectionQueue[0];
 	DirectionQueue.RemoveAt(0);
 
-
+	
 
 	// Rotate the snake
 	switch (Direction)
@@ -250,7 +239,7 @@ void ASnakePawn::AteApple()
 
 	if (IsValid(ChildBodyPart))
 	{
-		ChildBodyPart->AddChildBodyPart(BodyPart);
+		ChildBodyPart->AddChildBodyPart(BodyPart, this, 1);
 	}
 	else
 	{
