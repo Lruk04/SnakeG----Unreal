@@ -17,7 +17,7 @@ ASnakeBodyPart::ASnakeBodyPart()
 
 	CollisionComponent->SetupAttachment(RootComponent);
 	
-	intOffset = -20;
+	intOffset = -5;
 	
 	
 }
@@ -68,35 +68,35 @@ void ASnakeBodyPart::Tick(float DeltaTime)
 
 		FVector TargetPosition = NextPosition + Offset;
 
-		FVector Forward;
 		
-		if(SnakePawn != nullptr && SnakePawn)
-		{
-			Forward = (TargetPosition - Position).GetSafeNormal();
-			if(GEngine)
-			{
-				GEngine->AddOnScreenDebugMessage(
-					/* Key */ -1,
-			/* TimeToDisplay */ 5.0f,
-			/* Color */ FColor::Green,
-			/* Message */ TEXT("NOT NORMAL ") 
-					);
-			}
-		}
-		else
-		{
-			Forward = (NextPosition - Position).GetSafeNormal();
-			if(GEngine)
-			{
-				GEngine->AddOnScreenDebugMessage(
-					/* Key */ -1,
-			/* TimeToDisplay */ 5.0f,
-			/* Color */ FColor::Green,
-			/* Message */ TEXT("NORMAL ") 
-					);
-			}
-		}
-
+		
+		// if(SnakePawn != nullptr && SnakePawn)
+		// {
+		// 	Forward = (TargetPosition - Position).GetSafeNormal();
+		// 	if(GEngine)
+		// 	{
+		// 		GEngine->AddOnScreenDebugMessage(
+		// 			/* Key */ -1,
+		// 	/* TimeToDisplay */ 5.0f,
+		// 	/* Color */ FColor::Green,
+		// 	/* Message */ TEXT("NOT NORMAL ") 
+		// 			);
+		// 	}
+		// }
+		// else
+		// {
+		// 	Forward = (NextPosition - Position).GetSafeNormal();
+		// 	if(GEngine)
+		// 	{
+		// 		GEngine->AddOnScreenDebugMessage(
+		// 			/* Key */ -1,
+		// 	/* TimeToDisplay */ 5.0f,
+		// 	/* Color */ FColor::Green,
+		// 	/* Message */ TEXT("NORMAL ") 
+		// 			);
+		// 	}
+		// }
+		FVector Forward = (NextPosition - Position).GetSafeNormal();
 	
 		
 		Position += Forward * DeltaTime * Speed;
@@ -105,6 +105,19 @@ void ASnakeBodyPart::Tick(float DeltaTime)
 	}
 }
 
+// void ASnakeBodyPart::SetNextPosition(const FVector& InPosition)
+// {
+// 	// Update the next position for this body part
+// 	NextPosition = InPosition + GetOffset();
+//
+// 	// Pass the updated position to the child body part
+// 	if (IsValid(ChildBodyPart))
+// 	{
+// 		ChildBodyPart->SetNextPosition(NextPosition);
+// 	}
+// }
+
+
 void ASnakeBodyPart::SetNextPosition(const FVector& InPosition)
 {
 	if (IsValid(ChildBodyPart))
@@ -112,10 +125,10 @@ void ASnakeBodyPart::SetNextPosition(const FVector& InPosition)
 		ChildBodyPart->SetNextPosition(NextPosition);
 	}
 
-	NextPosition = InPosition;
+	NextPosition = InPosition + GetOffset();
 }
 
-FVector ASnakeBodyPart::GetOffset()
+FVector ASnakeBodyPart::GetOffset() 
 {
 	if (!IsValid(SnakePawn))
 	{
@@ -123,16 +136,6 @@ FVector ASnakeBodyPart::GetOffset()
 		return FVector::ZeroVector;
 	}
 
-	if (GEngine)
-	{
-		FString OffsetMessage = FString::Printf(TEXT("GET OFFSET: %d"), static_cast<int32>(SnakePawn->Direction));
-		GEngine->AddOnScreenDebugMessage(
-			/* Key */ -1,
-			/* TimeToDisplay */ 5.0f,
-			/* Color */ FColor::Green,
-			/* Message */ OffsetMessage
-		);
-	}
 
 	switch (SnakePawn->Direction)
 	{
@@ -156,17 +159,42 @@ FVector ASnakeBodyPart::GetOffset()
 	return Offset;
 }
 
-void ASnakeBodyPart::AddChildBodyPart(ASnakeBodyPart* InChildBodyPart, ASnakePawn* TempSnakePawn, int index)
+// void ASnakeBodyPart::AddChildBodyPart(ASnakeBodyPart* InChildBodyPart, ASnakePawn* TempSnakePawn)
+// {
+// 	SnakePawn = TempSnakePawn;
+//
+// 	if (IsValid(ChildBodyPart))
+// 	{
+// 		// Pass the child body part down the chain
+// 		ChildBodyPart->AddChildBodyPart(InChildBodyPart, SnakePawn);
+// 	}
+// 	else
+// 	{
+// 		// Set the new child body part
+// 		ChildBodyPart = InChildBodyPart;
+//
+// 		// Calculate the cumulative offset for the new child body part
+// 		Offset = GetOffset();
+// 		FVector NewPosition = GetActorLocation() - Offset;
+//
+// 		// Set the position of the new child body part
+// 		ChildBodyPart->SetActorLocation(NewPosition);
+//
+// 		// Pass the offset to the next child body part
+// 		ChildBodyPart->intOffset = intOffset; // Ensure the offset value is consistent
+// 	}
+// }
+
+
+void ASnakeBodyPart::AddChildBodyPart(ASnakeBodyPart* InChildBodyPart, ASnakePawn* TempSnakePawn)
 {
-	if(index == 1)
-	{
-		SnakePawn = TempSnakePawn;
-	}
+	
+	SnakePawn = TempSnakePawn;
+	
 	
 	if (IsValid(ChildBodyPart))
 	{
-		ChildBodyPart->AddChildBodyPart(InChildBodyPart,SnakePawn, 1);
-		ChildBodyPart->intOffset += 100;
+		ChildBodyPart->AddChildBodyPart(InChildBodyPart,SnakePawn);
 	}
 	else
 	{
@@ -176,5 +204,3 @@ void ASnakeBodyPart::AddChildBodyPart(ASnakeBodyPart* InChildBodyPart, ASnakePaw
 		ChildBodyPart->SetActorLocation(GetActorLocation());
 	}
 }
-
-

@@ -239,7 +239,7 @@ void ASnakePawn::AteApple()
 
 	if (IsValid(ChildBodyPart))
 	{
-		ChildBodyPart->AddChildBodyPart(BodyPart, this, 1);
+		ChildBodyPart->AddChildBodyPart(BodyPart, this);
 	}
 	else
 	{

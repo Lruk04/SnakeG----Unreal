@@ -19,12 +19,13 @@ private:
 
 	
 
-	FVector GetOffset();
 
 	ASnakePawn* SnakePawn = nullptr;
 public:
 
 	int intOffset;
+
+	FVector GetOffset();
 	// Sets default values for this actor's properties
 	ASnakeBodyPart();
 
@@ -35,7 +36,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USphereComponent* CollisionComponent;
 
-	void AddChildBodyPart(ASnakeBodyPart* InChildBodyPart, ASnakePawn* TempSnakePawn, int index);
+	void AddChildBodyPart(ASnakeBodyPart* InChildBodyPart, ASnakePawn* TempSnakePawn);
 
 	
 protected:
