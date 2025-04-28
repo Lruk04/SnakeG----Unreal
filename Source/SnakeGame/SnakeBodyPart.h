@@ -17,10 +17,20 @@ class SNAKEGAME_API ASnakeBodyPart : public AActor
 private:
 	
 
+<<<<<<< HEAD
 	
 public:
 
 	
+=======
+
+	ASnakePawn* SnakePawn = nullptr;
+public:
+
+	int intOffset;
+
+	FVector GetOffset();
+>>>>>>> c07a0f259513bb480206b473059b372bcfec839a
 	// Sets default values for this actor's properties
 	ASnakeBodyPart();
 
@@ -31,7 +41,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USphereComponent* CollisionComponent;
 
+<<<<<<< HEAD
 	void AddChildBodyPart(ASnakeBodyPart* InChildBodyPart);
+=======
+	void AddChildBodyPart(ASnakeBodyPart* InChildBodyPart, ASnakePawn* TempSnakePawn);
+>>>>>>> c07a0f259513bb480206b473059b372bcfec839a
 
 	
 protected:
