@@ -81,7 +81,7 @@ protected:
 	void UpdateFalling(float DeltaTime);
 
 	// Updates falling (called from Tick)
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category = "Snake")
 	void AteApple();
 
 public:	

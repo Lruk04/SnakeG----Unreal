@@ -207,7 +207,7 @@ void ASnakePawn::UpdateDirection()
 	{
 	case ESnakeDirection::Up:
 		ForwardRotation = FRotator(0.0f, 0.0f, 0.0f);
-		AteApple();
+		
 		break;
 	case ESnakeDirection::Right:
 		ForwardRotation = FRotator(0.0f, 90.0f, 0.0f);
@@ -239,7 +239,7 @@ void ASnakePawn::AteApple()
 
 	if (IsValid(ChildBodyPart))
 	{
-		ChildBodyPart->AddChildBodyPart(BodyPart, this, 1);
+		ChildBodyPart->AddChildBodyPart(BodyPart);
 	}
 	else
 	{

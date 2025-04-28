@@ -1,100 +1,90 @@
-﻿#ifndef GRID_H
-#define GRID_H
+﻿#pragma once
 
-#include <iostream>
-#include <vector>
+#include "CoreMinimal.h"
+#include "Subsystems/WorldSubsystem.h"
+#include "Grid.generated.h"
 
-
-class Tile
+USTRUCT(BlueprintType)
+struct FTile
 {
+    GENERATED_BODY()
+
 private:
-	int x, y;
-	char symbol;
-	bool occupied;
-	bool snake = false;
-	bool food = false;
-    
+    int32 X, Y;
+    char Symbol;
+    bool bOccupied;
+    bool bSnake;
+    bool bFood;
 
 public:
-	Tile(int x, int y, char symbol);
+    FTile() : X(0), Y(0), Symbol('O'), bOccupied(false), bSnake(false), bFood(false) {}
+    FTile(int32 InX, int32 InY, char InSymbol) : X(InX), Y(InY), Symbol(InSymbol), bOccupied(false), bSnake(false), bFood(false) {}
 
-	int hCost, gCost, fCost;
+    UPROPERTY(BlueprintReadOnly, Category = "Tile")
+    int32 HCost;
 
-	Tile* parent = nullptr;
+    UPROPERTY(BlueprintReadOnly, Category = "Tile")
+    int32 GCost;
 
-	Tile* GetCameFrom() const;
-	void SetCameFrom(Tile* previousTile);
+    UPROPERTY(BlueprintReadOnly, Category = "Tile")
+    int32 FCost;
 
+    FTile* Parent = nullptr;
 
-	int GetFCost() const;
-	int GetX() const;
-	int GetY() const;
+    int32 GetFCost() const { return FCost + HCost; }
+    int32 GetX() const { return X; }
+    int32 GetY() const { return Y; }
 
+    char GetSymbol() const { return Symbol; }
+    void SetSymbol(char NewSymbol) { Symbol = NewSymbol; }
 
-	char GetSymbol() const;
-	void SetSymbol(char newSymbol);
+    bool IsOccupied() const { return bOccupied; }
+    void SetOccupied(bool bIsOccupied) { bOccupied = bIsOccupied; }
 
-	bool IsOccupied() const;
-	void SetOccupied(bool isOccupied);
+    bool IsSnake() const { return bSnake; }
+    void SetSnake(bool bIsSnake) { bSnake = bIsSnake; }
 
-	bool IsSnake() const;
-	void SetSnake(bool isSnake);
-
-	bool IsFood() const;
-	void SetFood(bool isFood);
-
-	bool operator==(const Tile& other) const
-	{
-		return x == other.x && y == other.y;
-	}
-
-	bool operator==(const Tile* other) const
-	{
-		return x == other->x && y == other->y;
-	}
-    
+    bool IsFood() const { return bFood; }
+    void SetFood(bool bIsFood) { bFood = bIsFood; }
 };
 
-
-
-class Grid
+UCLASS(Blueprintable)
+class SNAKEGAME_API UGridSubsystem : public UWorldSubsystem
 {
-private:
-	static Grid* Instance;
+    GENERATED_BODY()
 
-	Grid(int width, int height); 
-	
-	int width, height;
-	std::vector<std::vector<Tile>> grid;
+private:
+    TArray<TArray<FTile>> Grid;
+    int32 Width;
+    int32 Height;
 
 public:
-	static Grid* GetInstance(int width = 20, int height = 20)
-	{
-		if (!Instance)
-		{
-			Instance = new Grid(width, height);
-		}
-		return Instance;
-	}
+    UGridSubsystem();
+    
+    UFUNCTION(BlueprintCallable, Category = "Grid")
+    void InitializeGrid(int32 InWidth, int32 InHeight);
 
-	static void DestroyInstance()
-	{
-		delete Instance;
-		Instance = nullptr;
-	}
+    UFUNCTION(BlueprintCallable, Category = "Grid")
+    FTile& GetTile(int32 X, int32 Y);
 
-	Tile& GetTile(int x, int y);
-	Grid* GetGrid();
-	std::vector<Tile*> GetTileList();
-	Tile& GetRandomUnoccupiedTile();
-	Tile& GetRandomAppleTile();
+    UFUNCTION(BlueprintCallable, Category = "Grid")
+    void SetTile(int32 X, int32 Y, bool bOccupied);
 
-	void SetTile(int x, int y, bool occupied);
-	void SetTileFood(int x, int y, bool food);
-	void SetTileSnake(int x, int y, bool snake);
-	void ClearGrid();
+    UFUNCTION(BlueprintCallable, Category = "Grid")
+    void SetTileFood(int32 X, int32 Y, bool bFood);
 
-	void printGrid() const;
+    UFUNCTION(BlueprintCallable, Category = "Grid")
+    void SetTileSnake(int32 X, int32 Y, bool bSnake);
+
+    UFUNCTION(BlueprintCallable, Category = "Grid")
+    void ClearGrid();
+
+    UFUNCTION(BlueprintCallable, Category = "Grid")
+    FTile& GetRandomUnoccupiedTile();
+
+    UFUNCTION(BlueprintCallable, Category = "Grid")
+    FTile& GetRandomAppleTile();
+
+    UFUNCTION(BlueprintCallable, Category = "Grid")
+    void PrintGrid() const;
 };
-
-#endif

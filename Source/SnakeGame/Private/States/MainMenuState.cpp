@@ -16,7 +16,7 @@ void UMainMenuState::ExitState_Implementation()
 void UMainMenuState::UpdateState_Implementation(float DeltaTime)
 {
 	testVariable += 1;
-	UE_LOG(LogTemp, Log, TEXT("MainMenuState: Update"));
+	//UE_LOG(LogTemp, Log, TEXT("MainMenuState: Update"));
 
 	if (GEngine)
 	{

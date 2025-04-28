@@ -15,4 +15,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGenerator")
 	TSubclassOf<AActor> AFloorMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGenerator")
+	TSubclassOf<AActor> AAppleMesh;
 };

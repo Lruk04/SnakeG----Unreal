@@ -1,133 +1,117 @@
 ﻿#include "Grid.h"
 
-Grid* Grid::Instance = nullptr;
 
-Tile::Tile(int x, int y, char symbol) : x(x), y(y), symbol(symbol), occupied(false), hCost(0), gCost(0), fCost(0), parent(nullptr)
+
+UGridSubsystem::UGridSubsystem()
 {
+
+    
+    
 }
 
-int Tile::GetX() const { return x; }
-int Tile::GetY() const { return y; }
-int Tile::GetFCost() const
+void UGridSubsystem::InitializeGrid(int32 InWidth, int32 InHeight)
 {
-	return fCost + hCost;
+    Width = InWidth;
+    Height = InHeight;
+
+    // Resize the grid to match the specified dimensions
+    Grid.SetNum(Height);
+    for (int32 Y = 0; Y < Height; ++Y)
+    {
+        Grid[Y].SetNum(Width);
+        for (int32 X = 0; X < Width; ++X)
+        {
+            Grid[Y][X] = FTile(X, Y, 'O'); // Initialize each tile with default values
+        }
+    }
+
+    UE_LOG(LogTemp, Log, TEXT("Grid initialized with dimensions: %d x %d"), Width, Height);
 }
 
-Tile* Tile::GetCameFrom() const { return parent; }
-void Tile::SetCameFrom(Tile* previousTile) { parent = previousTile; }
-
-char Tile::GetSymbol() const { return symbol; }
-void Tile::SetSymbol(char newSymbol) { symbol = newSymbol; }
-
-bool Tile::IsOccupied() const { return occupied; }
-void Tile::SetOccupied(bool isOccupied) {
-	occupied = isOccupied;
-	symbol = occupied ? 'X' : 'O';
-}
-
-bool Tile::IsSnake() const { return snake; }
-void Tile::SetSnake(bool isSnake) {
-	snake = isSnake;
-	symbol = snake ? 'S' : symbol;
-}
-
-bool Tile::IsFood() const { return food; }
-void Tile::SetFood(bool isFood) {
-	food = isFood;
-	symbol = food ? 'F' : symbol;
-}
-
-
-Grid::Grid(int width, int height) : width(width), height(height) {
-	grid.resize(height, std::vector<Tile>(width, Tile(0, 0, 'O')));
-	for (int y = 0; y < height; ++y) {
-		for (int x = 0; x < width; ++x) {
-			grid[y][x] = Tile(x, y, 'O');
-		}
-	}
-}
-
-Tile& Grid::GetTile(int x, int y) {
-	return grid[y][x];
-}
-
-void Grid::SetTile(int x, int y, bool occupied) {
-	grid[y][x].SetOccupied(occupied);
-}
-
-void Grid::SetTileFood(int x, int y, bool food) {
-	grid[y][x].SetFood(food);
-}
-
-void Grid::SetTileSnake(int x, int y, bool snake) {
-	grid[y][x].SetSnake(snake);
-}
-
-void Grid::ClearGrid()
+FTile& UGridSubsystem::GetTile(int32 X, int32 Y)
 {
-	for (int y = 0; y < height; ++y) {
-		for (int x = 0; x < width; ++x) {
-			grid[y][x].SetOccupied(false);
-			grid[y][x].SetFood(false);
-			grid[y][x].SetSnake(false);
-		}
-	}
+    return Grid[Y][X];
 }
 
-Grid* Grid::GetGrid() {
-	return this;
-}
-
-std::vector<Tile*> Grid::GetTileList()
+void UGridSubsystem::SetTile(int32 X, int32 Y, bool bOccupied)
 {
-	std::vector<Tile*> tiles;
-	for (auto& row : grid) {
-		for (auto& tile : row) {
-			tiles.push_back(&tile);
-		}
-	}
-	return tiles;
+    Grid[Y][X].SetOccupied(bOccupied);
+    Grid[Y][X] = FTile(X, Y, 'X');
 }
 
-
-void Grid::printGrid() const {
-	for (const auto& row : grid) {
-		for (const auto& tile : row) {
-			std::cout << tile.GetSymbol() << ' ';
-		}
-		std::cout << std::endl;
-	}
+void UGridSubsystem::SetTileFood(int32 X, int32 Y, bool bFood)
+{
+    Grid[Y][X].SetFood(bFood);
 }
 
-Tile& Grid::GetRandomUnoccupiedTile() {
-
-	int randomX = 0;
-	int randomY = 0;
-
-	do {
-		randomX = rand() % (width - 2) + 1;
-		randomY = rand() % (height - 2) + 1;
-	} while (grid[randomY][randomX].IsOccupied()  || grid[randomY][randomX].IsSnake() || grid[randomY][randomX].IsFood());
-	
-	return grid[randomY][randomX];
+void UGridSubsystem::SetTileSnake(int32 X, int32 Y, bool bSnake)
+{
+    Grid[Y][X].SetSnake(bSnake);
 }
 
-Tile& Grid::GetRandomAppleTile() {
-	std::vector<Tile*> appleTiles;
+void UGridSubsystem::ClearGrid()
+{
+    for (int32 Y = 0; Y < Height; ++Y)
+    {
+        for (int32 X = 0; X < Width; ++X)
+        {
+            Grid[Y][X].SetOccupied(false);
+            Grid[Y][X].SetFood(false);
+            Grid[Y][X].SetSnake(false);
+        }
+    }
+}
 
-	for (auto& row : grid) {
-		for (auto& tile : row) {
-			if (tile.IsFood()) {
-				appleTiles.push_back(&tile);
-			}
-		}
-	}
+FTile& UGridSubsystem::GetRandomUnoccupiedTile()
+{
+    int32 RandomX = 0;
+    int32 RandomY = 0;
 
-	if (appleTiles.empty()) {
-		throw std::runtime_error("No apple tile found");
-	}
+    do
+    {
+        RandomX = FMath::RandRange(0, Width - 1);
+        RandomY = FMath::RandRange(0, Height - 1);
+    } while (Grid[RandomY][RandomX].IsOccupied() || Grid[RandomY][RandomX].IsSnake() || Grid[RandomY][RandomX].IsFood());
 
-	std::srand(std::time(nullptr));
-	int randomIndex = std::rand() % appleTiles.size();
-	return *appleTiles[randomIndex];
+    return Grid[RandomY][RandomX];
+}
+
+FTile& UGridSubsystem::GetRandomAppleTile()
+{
+    TArray<FTile*> AppleTiles;
+
+    for (int32 Y = 0; Y < Height; ++Y)
+    {
+        for (int32 X = 0; X < Width; ++X)
+        {
+            if (Grid[Y][X].IsFood())
+            {
+                AppleTiles.Add(&Grid[Y][X]);
+            }
+        }
+    }
+
+    if (AppleTiles.Num() == 0)
+    {
+        UE_LOG(LogTemp, Error, TEXT("No apple tile found"));
+        throw std::runtime_error("No apple tile found");
+    }
+
+    int32 RandomIndex = FMath::RandRange(0, AppleTiles.Num() - 1);
+    return *AppleTiles[RandomIndex];
+}
+
+void UGridSubsystem::PrintGrid() const
+{
+    UE_LOG(LogTemp, Log, TEXT("Grid System:"));
+    for (const auto& Row : Grid)
+    {
+        FString RowString;
+        for (const auto& Tile : Row)
+        {
+            RowString += Tile.GetSymbol();
+            RowString += ' ';
+        }
+        UE_LOG(LogTemp, Log, TEXT("%s"), *RowString);
+    }
 }

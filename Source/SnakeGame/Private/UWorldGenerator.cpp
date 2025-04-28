@@ -8,14 +8,17 @@
 
 UWorldGenerator::UWorldGenerator()
 {
-	GameGrid = Grid::GetInstance();
-
-	
 	
 }
+void UWorldGenerator::Initialize(FSubsystemCollectionBase& Collection)
+{
+	Super::Initialize(Collection);
+}
+
 
 UWorldGenerator::~UWorldGenerator()
 {
+	
 }
 
 void UWorldGenerator::GenerateMap(const FString& FileName, const UWorldGenDataAsset* dataAsset) const
@@ -42,21 +45,23 @@ void UWorldGenerator::GenerateMap(const FString& FileName, const UWorldGenDataAs
 				{
 				case 'X':
 					{
-						
-						GameGrid->SetTile(x, y, true);
-
-						if (GEngine)
+						if (GridSubsystem)
 						{
-							GEngine->AddOnScreenDebugMessage(
-								/* Key */ -1, 
-								/* TimeToDisplay */ 5.0f, 
-								/* Color */ FColor::Green, 
-								/* Message */ TEXT("SPAWN WALL")
-							);
+							GridSubsystem->SetTile(x, y, true);
+							if (GEngine && GridSubsystem->GetTile(x,y).IsOccupied())
+							{
+								GEngine->AddOnScreenDebugMessage(
+									/* Key */ -1, 
+									/* TimeToDisplay */ 5.0f, 
+									/* Color */ FColor::Green, 
+									/* Message */ TEXT("U HAVE MADE MYSELF TRUE")
+								);
+							}
 						}
-						
-				
-						
+						else
+						{
+							UE_LOG(LogTemp, Error, TEXT("GridSubsystem is not initialized."));
+						}
 						
 						GetWorld()->SpawnActor(dataAsset->AWallMesh, &Offset);
 					
@@ -69,8 +74,10 @@ void UWorldGenerator::GenerateMap(const FString& FileName, const UWorldGenDataAs
 					}
 
 					break;
+		
 				default: break;
 				}
+					
 			}
 			y++;
 		}
@@ -108,13 +115,60 @@ void UWorldGenerator::ClearMap() const
 
 
 	//Grid->Tiles.clear();
-
-	GameGrid->ClearGrid();
-}
-
-void UWorldGenerator::Initialize(FSubsystemCollectionBase& Collection)
-{
-	Super::Initialize(Collection);
-
+	//GridSubsystem->ClearGrid();
 	
 }
+
+void UWorldGenerator::SetSubSystem()
+{
+	// UObject* SubsystemObject = GetWorld()->GetSubsystemBase(UGridSubsystem::StaticClass());
+	// if (!SubsystemObject)
+	// {
+	// 	UE_LOG(LogTemp, Error, TEXT("Failed to retrieve any subsystem of type UGridSubsystem."));
+	// 	return;
+	// }
+	//
+	// if (!SubsystemObject->IsA(UGridSubsystem::StaticClass()))
+	// {
+	// 	UE_LOG(LogTemp, Error, TEXT("Retrieved subsystem is not of type UGridSubsystem."));
+	// 	return;
+	// }
+
+
+	//GridSubsystem = Cast<UGridSubsystem>(SubsystemObject);
+	GridSubsystem = GetWorld()->GetSubsystem<UGridSubsystem>();
+	if (GridSubsystem)
+	{
+		GridSubsystem->InitializeGrid(GWorld_Width, GWorld_Height);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to cast subsystem to UGridSubsystem."));
+	}
+}
+
+void UWorldGenerator::SpawnApple(const UWorldGenDataAsset* dataAsset) const
+{
+	int x = 0;
+	int y = 0;
+	auto& newPos = GridSubsystem->GetRandomUnoccupiedTile();
+	
+	x = newPos.GetX();
+	y = newPos.GetY();
+	FTransform Offset = FTransform(FRotator::ZeroRotator, FVector(x * TileSize + 50, y * TileSize + 50, 0.0f));
+	GridSubsystem->SetTileFood(x, y, true);
+	GetWorld()->SpawnActor(dataAsset->AAppleMesh, &Offset); 
+
+	if(GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(
+			/* Key */ -1, 
+			/* TimeToDisplay */ 5.0f, 
+			/* Color */ FColor::Green, 
+			/* Message */ *FString::Printf(TEXT("Apple Spawned at (%d, %d)"), x, y)
+		);
+	}
+	GridSubsystem->PrintGrid();
+	
+}
+
