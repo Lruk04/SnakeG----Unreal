@@ -170,3 +170,16 @@ void UWorldGenerator::SpawnApple(const UWorldGenDataAsset* dataAsset) const
 	
 }
 
+void UWorldGenerator::SetAssetData(const UWorldGenDataAsset* dataAsset)
+{
+	WorldGenDataAsset = dataAsset;
+	if (WorldGenDataAsset)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Data asset set successfully."));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to set data asset."));
+	}
+}
+

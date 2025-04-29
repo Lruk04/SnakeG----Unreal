@@ -199,7 +199,6 @@ void ASnakePawn::UpdateDirection()
 	{
 	case ESnakeDirection::Up:
 		ForwardRotation = FRotator(0.0f, 0.0f, 0.0f);
-		AteApple();
 		break;
 	case ESnakeDirection::Right:
 		ForwardRotation = FRotator(0.0f, 90.0f, 0.0f);
@@ -218,24 +217,28 @@ void ASnakePawn::SetNextDirection(ESnakeDirection InDirection)
 	DirectionQueue.Add(InDirection);
 }
 
-void ASnakePawn::AteApple()
+void ASnakePawn::AteApple(int GrowthAmount)
 {
 	UE_LOG(LogTemp, Log, TEXT("Apple eaten!"));
 
-	FActorSpawnParameters SpawnParameters;
-
-	SpawnParameters.Instigator = GetInstigator();
-
-	ASnakeBodyPart* BodyPart = GetWorld()->SpawnActor<ASnakeBodyPart>(BodyPartClass, GetActorLocation(), GetActorRotation(), SpawnParameters);
-
-	if (IsValid(ChildBodyPart))
+	for (int i = 0; i < GrowthAmount; ++i)
 	{
-		ChildBodyPart->AddChildBodyPart(BodyPart);
+		FActorSpawnParameters SpawnParameters;
+
+		SpawnParameters.Instigator = GetInstigator();
+
+		ASnakeBodyPart* BodyPart = GetWorld()->SpawnActor<ASnakeBodyPart>(BodyPartClass, GetActorLocation(), GetActorRotation(), SpawnParameters);
+
+		if (IsValid(ChildBodyPart))
+		{
+			ChildBodyPart->AddChildBodyPart(BodyPart);
+		}
+		else
+		{
+			ChildBodyPart = BodyPart;
+		}
 	}
-	else
-	{
-		ChildBodyPart = BodyPart;
-	}
+
 	
 	// Send to the player state that an apple has been eaten
 	SnakePlayerState->AddAppleEaten();

@@ -9,11 +9,15 @@ class UWorldGenerator final : public UWorldSubsystem
 	GENERATED_BODY()
 
 public:
+
 	
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<AActor*> SpawnedActor;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "WorldGenerator")
+	const UWorldGenDataAsset* WorldGenDataAsset;
+	
 	UGridSubsystem* GridSubsystem;
 	
 	UWorldGenerator();
@@ -31,6 +35,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "WorldGenerator")
 	void SpawnApple(const UWorldGenDataAsset* dataAsset) const;
+
+	UFUNCTION(BlueprintCallable, Category = "WorldGenerator")
+	void SetAssetData(const UWorldGenDataAsset* dataAsset);
 
 protected:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;

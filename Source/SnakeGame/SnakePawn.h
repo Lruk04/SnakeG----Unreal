@@ -82,7 +82,7 @@ protected:
 
 	// Updates falling (called from Tick)
 	UFUNCTION(BlueprintCallable, Category = "Snake")
-	void AteApple();
+	void AteApple(int GrowthAmount);
 
 public:	
 	// Called every frame
