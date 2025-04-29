@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "Grid.generated.h"
@@ -17,8 +18,8 @@ private:
     bool bFood;
 
 public:
-    FTile() : X(0), Y(0), Symbol('O'), bOccupied(false), bSnake(false), bFood(false) {}
-    FTile(int32 InX, int32 InY, char InSymbol) : X(InX), Y(InY), Symbol(InSymbol), bOccupied(false), bSnake(false), bFood(false) {}
+    FTile();
+    FTile(int32 InX, int32 InY, char InSymbol);
 
     UPROPERTY(BlueprintReadOnly, Category = "Tile")
     int32 HCost;
@@ -29,23 +30,23 @@ public:
     UPROPERTY(BlueprintReadOnly, Category = "Tile")
     int32 FCost;
 
-    FTile* Parent = nullptr;
+    FTile* Parent;
 
-    int32 GetFCost() const { return FCost + HCost; }
-    int32 GetX() const { return X; }
-    int32 GetY() const { return Y; }
+    int32 GetFCost() const;
+    int32 GetX() const;
+    int32 GetY() const;
 
-    char GetSymbol() const { return Symbol; }
-    void SetSymbol(char NewSymbol) { Symbol = NewSymbol; }
+    char GetSymbol() const;
+    void SetSymbol(char NewSymbol);
 
-    bool IsOccupied() const { return bOccupied; }
-    void SetOccupied(bool bIsOccupied) { bOccupied = bIsOccupied; }
+    bool IsOccupied() const;
+    void SetOccupied(bool bIsOccupied);
 
-    bool IsSnake() const { return bSnake; }
-    void SetSnake(bool bIsSnake) { bSnake = bIsSnake; }
+    bool IsSnake() const;
+    void SetSnake(bool bIsSnake);
 
-    bool IsFood() const { return bFood; }
-    void SetFood(bool bIsFood) { bFood = bIsFood; }
+    bool IsFood() const;
+    void SetFood(bool bIsFood);
 };
 
 UCLASS(Blueprintable)

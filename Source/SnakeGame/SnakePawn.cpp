@@ -58,29 +58,28 @@ void ASnakePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	
-
 }
 
 void ASnakePawn::MoveSnake(float Distance)
 {
 	// Get snake location in the world
 	FVector Position = GetActorLocation();
+
 	// Update moving the snake
 	switch (Direction)
 	{
-		case ESnakeDirection::Up:
-			Position.X += Distance;
-			break;
-		case ESnakeDirection::Right:
-			Position.Y += Distance;
-			break;
-		case ESnakeDirection::Down:
-			Position.X -= Distance;
-			break;
-		case ESnakeDirection::Left:
-			Position.Y -= Distance;
-			break;
+	case ESnakeDirection::Up:
+		Position.X += Distance;
+		break;
+	case ESnakeDirection::Right:
+		Position.Y += Distance;
+		break;
+	case ESnakeDirection::Down:
+		Position.X -= Distance;
+		break;
+	case ESnakeDirection::Left:
+		Position.Y -= Distance;
+		break;
 	}
 
 	// Set snake location in the world
@@ -125,7 +124,7 @@ void ASnakePawn::UpdateMovement(float DeltaTime)
 			ChildBodyPart->SetNextPosition(GetActorLocation());
 		}
 	
-		
+
 	}
 
 	// If there are any move distance left, then move the snake that distance
@@ -189,25 +188,18 @@ void ASnakePawn::UpdateDirection()
 		return;
 	}
 
-	if (Direction != ESnakeDirection::None &&
-	(static_cast<uint8>(Direction) + 2) % 4 == static_cast<uint8>(DirectionQueue[0]))
-	{
-		// Ignore the opposite direction
-		DirectionQueue.RemoveAt(0);
-		return;
-	}
-
 	Direction = DirectionQueue[0];
+
 	DirectionQueue.RemoveAt(0);
 
-	
+
 
 	// Rotate the snake
 	switch (Direction)
 	{
 	case ESnakeDirection::Up:
 		ForwardRotation = FRotator(0.0f, 0.0f, 0.0f);
-		
+		AteApple();
 		break;
 	case ESnakeDirection::Right:
 		ForwardRotation = FRotator(0.0f, 90.0f, 0.0f);
@@ -218,7 +210,6 @@ void ASnakePawn::UpdateDirection()
 	case ESnakeDirection::Left:
 		ForwardRotation = FRotator(0.0f, 270.0f, 0.0f);
 		break;
-	default: ;
 	}
 }
 
@@ -239,11 +230,7 @@ void ASnakePawn::AteApple()
 
 	if (IsValid(ChildBodyPart))
 	{
-<<<<<<< HEAD
 		ChildBodyPart->AddChildBodyPart(BodyPart);
-=======
-		ChildBodyPart->AddChildBodyPart(BodyPart, this);
->>>>>>> c07a0f259513bb480206b473059b372bcfec839a
 	}
 	else
 	{

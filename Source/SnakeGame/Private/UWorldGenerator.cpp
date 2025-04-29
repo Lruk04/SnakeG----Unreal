@@ -23,8 +23,6 @@ UWorldGenerator::~UWorldGenerator()
 
 void UWorldGenerator::GenerateMap(const FString& FileName, const UWorldGenDataAsset* dataAsset) const
 {
-	
-
 	//todo: read the files in the maps folder and give as a suggestion in a collection for the argument of generate map
 
 	TArray<FString> Rows;
@@ -39,43 +37,43 @@ void UWorldGenerator::GenerateMap(const FString& FileName, const UWorldGenDataAs
 			for(int x = 0; x < Row.Len(); x++)
 			{
 			
-				FTransform Offset = FTransform(FRotator::ZeroRotator, FVector((Rows.Num() - y) * TileSize + 50, x * TileSize + 50, 0.0f));
+				FTransform Offset = FTransform(FRotator::ZeroRotator, FVector(x* TileSize + 50, y * TileSize + 50, 0.0f));
 				
 				switch(Row[x])
 				{
-				case 'X':
-					{
-						if (GridSubsystem)
+					case 'X':
 						{
-							GridSubsystem->SetTile(x, y, true);
-							if (GEngine && GridSubsystem->GetTile(x,y).IsOccupied())
+							if (GridSubsystem)
 							{
-								GEngine->AddOnScreenDebugMessage(
-									/* Key */ -1, 
-									/* TimeToDisplay */ 5.0f, 
-									/* Color */ FColor::Green, 
-									/* Message */ TEXT("U HAVE MADE MYSELF TRUE")
-								);
+								GridSubsystem->SetTile(x, y , true);	
+								if (GEngine && GridSubsystem->GetTile(x,y).IsOccupied())
+								{
+									GEngine->AddOnScreenDebugMessage(
+										/* Key */ -1, 
+										/* TimeToDisplay */ 5.0f, 
+										/* Color */ FColor::Green, 
+										/* Message */ TEXT("U HAVE MADE MYSELF TRUE")
+									);
+								}
 							}
+							else
+							{
+								UE_LOG(LogTemp, Error, TEXT("GridSubsystem is not initialized."));
+							}
+							
+							GetWorld()->SpawnActor(dataAsset->AWallMesh, &Offset);
+						
+							
 						}
-						else
+					case 'O':
 						{
-							UE_LOG(LogTemp, Error, TEXT("GridSubsystem is not initialized."));
+							/* Create a floor mesh that spawns below the wall height */
+							//GameGrid->SetTile(x, y, false);
 						}
-						
-						GetWorld()->SpawnActor(dataAsset->AWallMesh, &Offset);
-					
-						
-					}
-				case 'O':
-					{
-						/* Create a floor mesh that spawns below the wall height */
-						//GameGrid->SetTile(x, y, false);
-					}
 
-					break;
-		
-				default: break;
+						break;
+			
+					default: break;
 				}
 					
 			}
@@ -121,18 +119,7 @@ void UWorldGenerator::ClearMap() const
 
 void UWorldGenerator::SetSubSystem()
 {
-	// UObject* SubsystemObject = GetWorld()->GetSubsystemBase(UGridSubsystem::StaticClass());
-	// if (!SubsystemObject)
-	// {
-	// 	UE_LOG(LogTemp, Error, TEXT("Failed to retrieve any subsystem of type UGridSubsystem."));
-	// 	return;
-	// }
-	//
-	// if (!SubsystemObject->IsA(UGridSubsystem::StaticClass()))
-	// {
-	// 	UE_LOG(LogTemp, Error, TEXT("Retrieved subsystem is not of type UGridSubsystem."));
-	// 	return;
-	// }
+
 
 
 	//GridSubsystem = Cast<UGridSubsystem>(SubsystemObject);
@@ -166,6 +153,17 @@ void UWorldGenerator::SpawnApple(const UWorldGenDataAsset* dataAsset) const
 			/* TimeToDisplay */ 5.0f, 
 			/* Color */ FColor::Green, 
 			/* Message */ *FString::Printf(TEXT("Apple Spawned at (%d, %d)"), x, y)
+		);
+	}
+
+	if(GEngine && GridSubsystem->GetTile(x,y).IsOccupied())
+	{
+		
+		GEngine->AddOnScreenDebugMessage(
+			/* Key */ -1, 
+			/* TimeToDisplay */ 5.0f, 
+			/* Color */ FColor::Green, 
+			/* Message */ *FString::Printf(TEXT("engine is stupid" ))
 		);
 	}
 	GridSubsystem->PrintGrid();
