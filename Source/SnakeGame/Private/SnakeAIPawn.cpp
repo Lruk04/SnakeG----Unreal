@@ -1,12 +1,15 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
-#include "SnakePawn.h"
-#include "SnakePlayerState.h"
-#include "SnakeBodyPart.h"
+
+#include "SnakeAIPawn.h"
+
+#include "SnakeAIController.h"
+#include "../SnakePlayerState.h"
+#include "../SnakeBodyPart.h"
 
 
 // Sets default values
-ASnakePawn::ASnakePawn()
+ASnakeAIPawn::ASnakeAIPawn()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -20,16 +23,13 @@ ASnakePawn::ASnakePawn()
 	CollisionComponent->SetupAttachment(RootComponent);
 
 	
+	AIControllerClass = ASnakeAIController::StaticClass();      // ← Which AI controller to use
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;        // ← When to assign it
 }
 
-void ASnakePawn::PossessedBy(AController* NewController)
+void ASnakeAIPawn::PossessedBy(AController* NewController)
 {
 	SnakePlayerState = NewController->GetPlayerState<ASnakePlayerState>();
-
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("SnakePawn has been possessed by a controller."));
-	}
 
 	if (!IsValid(SnakePlayerState))
 	{
@@ -40,14 +40,14 @@ void ASnakePawn::PossessedBy(AController* NewController)
 }
 
 // Called when the game starts or when spawned
-void ASnakePawn::BeginPlay()
+void ASnakeAIPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
 // Called every frame
-void ASnakePawn::Tick(float DeltaTime)
+void ASnakeAIPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
@@ -62,13 +62,13 @@ void ASnakePawn::Tick(float DeltaTime)
 }
 
 // Called to bind functionality to input
-void ASnakePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void ASnakeAIPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
 
-void ASnakePawn::MoveSnake(float Distance)
+void ASnakeAIPawn::MoveSnake(float Distance)
 {
 	// Get snake location in the world
 	FVector Position = GetActorLocation();
@@ -96,7 +96,7 @@ void ASnakePawn::MoveSnake(float Distance)
 	MovedTileDistance += Distance;
 }
 
-void ASnakePawn::UpdateMovement(float DeltaTime)
+void ASnakeAIPawn::UpdateMovement(float DeltaTime)
 {
 	// What the total distance the snake should move this frame is
 	float TotalMoveDistance = SnakePlayerState->GetSnakeSpeed() * DeltaTime;
@@ -142,7 +142,7 @@ void ASnakePawn::UpdateMovement(float DeltaTime)
 	}
 }
 
-void ASnakePawn::UpdateFalling(float DeltaTime)
+void ASnakeAIPawn::UpdateFalling(float DeltaTime)
 {
 	// Get snake location in the world
 	FVector Position = GetActorLocation();
@@ -180,7 +180,7 @@ void ASnakePawn::UpdateFalling(float DeltaTime)
 	SetActorLocation(Position);
 }
 
-void ASnakePawn::Jump()
+void ASnakeAIPawn::Jump()
 {
 	// Makes the snake jump (if it is not in the air)
 	if (!bInAir)
@@ -189,7 +189,7 @@ void ASnakePawn::Jump()
 	}
 }
 
-void ASnakePawn::UpdateDirection()
+void ASnakeAIPawn::UpdateDirection()
 {
 	if (DirectionQueue.IsEmpty())
 	{
@@ -220,12 +220,12 @@ void ASnakePawn::UpdateDirection()
 	}
 }
 
-void ASnakePawn::SetNextDirection(ESnakeDirection InDirection)
+void ASnakeAIPawn::SetNextDirection(ESnakeDirection InDirection)
 {
 	DirectionQueue.Add(InDirection);
 }
 
-void ASnakePawn::AteApple(int GrowthAmount)
+void ASnakeAIPawn::AteApple(int GrowthAmount)
 {
 	UE_LOG(LogTemp, Log, TEXT("Apple eaten!"));
 

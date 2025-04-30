@@ -107,6 +107,8 @@ FTile& UGridSubsystem::GetRandomUnoccupiedTile()
         {
            
         }
+
+        
     } while (Grid[RandomY][RandomX].IsOccupied() || Grid[RandomY][RandomX].IsSnake() || Grid[RandomY][RandomX].IsFood());
 
     return Grid[RandomY][RandomX];
