@@ -205,18 +205,18 @@ void ASnakePawn::UpdateDirection()
 	// Rotate the snake
 	switch (Direction)
 	{
-	case ESnakeDirection::Up:
-		ForwardRotation = FRotator(0.0f, 0.0f, 0.0f);
-		break;
-	case ESnakeDirection::Right:
-		ForwardRotation = FRotator(0.0f, 90.0f, 0.0f);
-		break;
-	case ESnakeDirection::Down:
-		ForwardRotation = FRotator(0.0f, 180.0f, 0.0f);
-		break;
-	case ESnakeDirection::Left:
-		ForwardRotation = FRotator(0.0f, 270.0f, 0.0f);
-		break;
+		case ESnakeDirection::Up:
+			ForwardRotation = FRotator(0.0f, 0.0f, 0.0f);
+			break;
+		case ESnakeDirection::Right:
+			ForwardRotation = FRotator(0.0f, 90.0f, 0.0f);
+			break;
+		case ESnakeDirection::Down:
+			ForwardRotation = FRotator(0.0f, 180.0f, 0.0f);
+			break;
+		case ESnakeDirection::Left:
+			ForwardRotation = FRotator(0.0f, 270.0f, 0.0f);
+			break;
 	}
 }
 

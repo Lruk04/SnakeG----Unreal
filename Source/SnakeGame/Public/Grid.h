@@ -47,6 +47,10 @@ public:
 
     bool IsFood() const;
     void SetFood(bool bIsFood);
+    bool operator==(const FTile& other) const
+    {
+        return X == other.X && Y == other.Y;
+    }
 };
 
 UCLASS(Blueprintable)
@@ -88,4 +92,9 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "Grid")
     void PrintGrid() const;
+
+    TArray<TArray<FTile>> GetGrid() const
+    {
+        return Grid;
+    }
 };

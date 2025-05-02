@@ -2,9 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
-#include "Grid.h"
+
 #include "PathFindingSubsystem.generated.h"
 
+class AGrid;
 UCLASS(Blueprintable)
 class SNAKEGAME_API UPathFindingSubsystem : public UWorldSubsystem
 {
@@ -13,6 +14,7 @@ class SNAKEGAME_API UPathFindingSubsystem : public UWorldSubsystem
 private:
     UPROPERTY()
     UGridSubsystem* GridSubsystem;
+    bool bFirstPathing = false;
 
 public:
     UPathFindingSubsystem();
@@ -23,7 +25,7 @@ public:
     TArray<FTile> FindPath(const FTile& Start, const FTile& Goal, ESnakeDirection Direction);
 
 private:
-    int32 GetDistance(const FTile& A, const FTile& B) const;
-    TArray<FTile> RetracePath(FTile* Current) const;
+    static int32 GetDistance(const FTile& A, const FTile& B);
+    static TArray<FTile> RetracePath(const FTile* Current);
     TArray<FTile> FindNeighbours(ESnakeDirection Direction, const FTile& CurrentTile) const;
 };

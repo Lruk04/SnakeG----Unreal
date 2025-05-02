@@ -46,15 +46,7 @@ void UWorldGenerator::GenerateMap(const FString& FileName, const UWorldGenDataAs
 							if (GridSubsystem)
 							{
 								GridSubsystem->SetTile(x, y , true);	
-								if (GEngine && GridSubsystem->GetTile(x,y).IsOccupied())
-								{
-									GEngine->AddOnScreenDebugMessage(
-										/* Key */ -1, 
-										/* TimeToDisplay */ 5.0f, 
-										/* Color */ FColor::Green, 
-										/* Message */ TEXT("U HAVE MADE MYSELF TRUE")
-									);
-								}
+								
 							}
 							else
 							{

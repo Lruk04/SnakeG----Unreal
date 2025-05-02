@@ -129,10 +129,13 @@ FTile& UGridSubsystem::GetRandomAppleTile()
         }
     }
 
+    
     if (AppleTiles.Num() == 0)
     {
         UE_LOG(LogTemp, Error, TEXT("No apple tile found"));
-        throw std::runtime_error("No apple tile found");
+        // Handle the error gracefully, e.g., return a default tile or take other action
+        static FTile DefaultTile;
+        return DefaultTile;
     }
 
     int32 RandomIndex = FMath::RandRange(0, AppleTiles.Num() - 1);

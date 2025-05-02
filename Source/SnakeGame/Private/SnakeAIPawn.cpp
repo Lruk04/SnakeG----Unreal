@@ -23,8 +23,8 @@ ASnakeAIPawn::ASnakeAIPawn()
 	CollisionComponent->SetupAttachment(RootComponent);
 
 	
-	AIControllerClass = ASnakeAIController::StaticClass();      // ← Which AI controller to use
-	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;        // ← When to assign it
+	
+	
 }
 
 void ASnakeAIPawn::PossessedBy(AController* NewController)
